@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banana Inspection System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-seedling text-3xl text-green-600"></i>
+                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="text-green-600 font-semibold">Home</a>
+                    <a href="/detect" class="text-gray-600 hover:text-green-600">Detection</a>
+                    <a href="/history" class="text-gray-600 hover:text-green-600">History</a>
+                    <a href="/dashboard" class="text-gray-600 hover:text-green-600">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">YOLO-Based Visual Inspection</h1>
+            <p class="text-2xl text-gray-600 mb-2">for Banana Ripeness and Defect Detection</p>
+            <p class="text-lg text-gray-500 mt-6 max-w-2xl mx-auto">
+                Automated quality control system using YOLOv8 deep learning technology 
+                to classify banana ripeness and detect defects with high accuracy.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
+                <div class="text-yellow-500 text-4xl mb-4">
+                    <i class="fas fa-banana"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Unripe</h3>
+                <p class="text-gray-600">Early stage detection</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
+                <div class="text-green-500 text-4xl mb-4">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Ripe</h3>
+                <p class="text-gray-600">Perfect condition</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
+                <div class="text-orange-500 text-4xl mb-4">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Overripe</h3>
+                <p class="text-gray-600">Urgent sale needed</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
+                <div class="text-red-500 text-4xl mb-4">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Rotten</h3>
+                <p class="text-gray-600">Quality compromised</p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="/detect" class="inline-block bg-green-600 text-white px-12 py-4 rounded-lg text-xl font-semibold hover:bg-green-700 transition shadow-lg">
+                <i class="fas fa-camera mr-2"></i>
+                Start Inspection
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - Banana Inspection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-seedling text-3xl text-green-600"></i>
+                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
+                    <a href="/detect" class="text-gray-600 hover:text-green-600">Detection</a>
+                    <a href="/history" class="text-green-600 font-semibold">History</a>
+                    <a href="/dashboard" class="text-gray-600 hover:text-green-600">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Inspection History</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-6 py-3 text-left">Image</th>
+                            <th class="px-6 py-3 text-left">Classification</th>
+                            <th class="px-6 py-3 text-left">Confidence</th>
+                            <th class="px-6 py-3 text-left">Status</th>
+                            <th class="px-6 py-3 text-left">Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if history %}
+                            {% for item in history|reverse %}
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <img src="/static/uploads/{{ item.image }}" class="w-20 h-20 object-cover rounded">
+                                </td>
+                                <td class="px-6 py-4 font-semibold">{{ item.class|upper }}</td>
+                                <td class="px-6 py-4">{{ item.confidence }}%</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 rounded-full text-white font-semibold
+                                        {% if item.status == 'PASS' %}bg-green-600
+                                        {% elif item.status == 'WARNING' %}bg-orange-600
+                                        {% else %}bg-red-600{% endif %}">
+                                        {{ item.status }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">{{ item.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                                    <i class="fas fa-inbox text-6xl mb-4"></i>
+                                    <p class="text-xl">No inspection history yet</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

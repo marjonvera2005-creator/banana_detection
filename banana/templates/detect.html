@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection - Banana Inspection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-seedling text-3xl text-green-600"></i>
+                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
+                    <a href="/detect" class="text-green-600 font-semibold">Detection</a>
+                    <a href="/history" class="text-gray-600 hover:text-green-600">History</a>
+                    <a href="/dashboard" class="text-gray-600 hover:text-green-600">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Banana Quality Inspection</h1>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-upload text-green-600 mr-3"></i>
+                    Upload Image
+                </h2>
+                
+                <div id="dropZone" class="border-4 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-green-500 transition">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i>
+                    <p class="text-xl text-gray-600 mb-2">Drag & Drop or Click to Upload</p>
+                    <p class="text-sm text-gray-500">Supported: JPG, PNG, JPEG</p>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+
+                <div id="preview" class="mt-6 hidden">
+                    <img id="previewImage" class="w-full rounded-lg shadow-lg">
+                    <button id="analyzeBtn" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                        <i class="fas fa-search mr-2"></i>
+                        Analyze Image
+                    </button>
+                </div>
+
+                <div id="loading" class="hidden mt-6 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-green-600"></i>
+                    <p class="mt-2 text-gray-600">Analyzing...</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-clipboard-check text-green-600 mr-3"></i>
+                    Inspection Results
+                </h2>
+
+                <div id="noResult" class="text-center py-12 text-gray-400">
+                    <i class="fas fa-image text-6xl mb-4"></i>
+                    <p class="text-xl">Upload an image to see results</p>
+                </div>
+
+                <div id="resultContainer" class="hidden">
+                    <div class="mb-6">
+                        <img id="resultImage" class="w-full rounded-lg shadow-lg">
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <span class="font-semibold">Classification:</span>
+                            <span id="resultClass" class="text-xl font-bold"></span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <span class="font-semibold">Confidence:</span>
+                            <span id="resultConfidence" class="text-xl font-bold"></span>
+                        </div>
+
+                        <div id="statusBadge" class="p-4 rounded-lg text-center text-white font-bold text-xl">
+                            <span id="resultStatus"></span>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                            <p class="font-semibold text-blue-900 mb-2">Recommendation:</p>
+                            <p id="resultMessage" class="text-blue-800"></p>
+                        </div>
+
+                        <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded">
+                            <p class="font-semibold text-green-900 mb-2">Action Required:</p>
+                            <p id="resultAction" class="text-green-800"></p>
+                        </div>
+                    </div>
+
+                    <button id="newInspection" class="w-full mt-6 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition">
+                        <i class="fas fa-redo mr-2"></i>
+                        New Inspection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const previewImage = document.getElementById('previewImage');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loading = document.getElementById('loading');
+        const noResult = document.getElementById('noResult');
+        const resultContainer = document.getElementById('resultContainer');
+        let selectedFile = null;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-green-500');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-green-500');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-green-500');
+            const file = e.dataTransfer.files[0];
+            handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            handleFile(file);
+        });
+
+        function handleFile(file) {
+            if (file && file.type.startsWith('image/')) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    dropZone.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            loading.classList.remove('hidden');
+            preview.classList.add('hidden');
+            noResult.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                loading.classList.add('hidden');
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Error: ' + data.error);
+                    preview.classList.remove('hidden');
+                }
+            } catch (error) {
+                loading.classList.add('hidden');
+                alert('Error: ' + error.message);
+                preview.classList.remove('hidden');
+            }
+        });
+
+        function displayResults(data) {
+            document.getElementById('resultImage').src = '/static/uploads/' + data.image;
+            document.getElementById('resultClass').textContent = data.class.toUpperCase();
+            document.getElementById('resultConfidence').textContent = data.confidence + '%';
+            document.getElementById('resultStatus').textContent = data.status;
+            document.getElementById('resultMessage').textContent = data.message;
+            document.getElementById('resultAction').textContent = data.action;
+
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.className = 'p-4 rounded-lg text-center text-white font-bold text-xl bg-' + data.color + '-600';
+
+            resultContainer.classList.remove('hidden');
+        }
+
+        document.getElementById('newInspection').addEventListener('click', () => {
+            resultContainer.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+            preview.classList.add('hidden');
+            noResult.classList.remove('hidden');
+            fileInput.value = '';
+            selectedFile = null;
+        });
+    </script>
+</body>
+</html>
