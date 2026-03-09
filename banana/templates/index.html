@@ -6,14 +6,38 @@
     <title>Banana Inspection System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
-    <nav class="bg-white shadow-lg">
+<body class="min-h-screen">
+    <nav class="glass shadow-2xl sticky top-0 z-50">
         <div class="container mx-auto px-4 sm:px-6 py-4">
             <div class="flex items-center justify-between flex-wrap">
                 <div class="flex items-center space-x-2 sm:space-x-3">
-                    <i class="fas fa-seedling text-2xl sm:text-3xl text-green-600"></i>
-                    <span class="text-lg sm:text-2xl font-bold text-gray-800">Banana Inspection</span>
+                    <img src="{{ url_for('static', filename='images/banana.png') }}" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain">
+                    <span class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-yellow-600 bg-clip-text text-transparent">Banana Inspection System</span>
                 </div>
                 <div class="flex space-x-3 sm:space-x-6 text-sm sm:text-base mt-2 sm:mt-0">
                     <a href="/" class="text-green-600 font-semibold">Home</a>
@@ -27,47 +51,39 @@
 
     <div class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16">
         <div class="text-center mb-8 sm:mb-12">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-3 sm:mb-4">YOLO-Based Visual Inspection</h1>
-            <p class="text-lg sm:text-xl md:text-2xl text-gray-600 mb-2">for Banana Ripeness and Defect Detection</p>
-            <p class="text-sm sm:text-base md:text-lg text-gray-500 mt-4 sm:mt-6 max-w-2xl mx-auto px-4">
+            <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg">YOLO-Based Visual Inspection</h1>
+            <p class="text-lg sm:text-xl md:text-2xl text-white mb-2 drop-shadow-md">for Banana Ripeness and Defect Detection</p>
+            <p class="text-sm sm:text-base md:text-lg text-white mt-4 sm:mt-6 max-w-2xl mx-auto px-4 drop-shadow-md">
                 Automated quality control system using YOLOv8 deep learning technology 
                 to classify banana ripeness and detect defects with high accuracy.
             </p>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12">
-            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
-                <div class="text-yellow-500 text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-4">
-                    <i class="fas fa-banana"></i>
-                </div>
-                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2">Unripe</h3>
-                <p class="text-xs sm:text-sm text-gray-600">Early stage detection</p>
+            <div class="glass p-4 sm:p-6 rounded-2xl shadow-2xl text-center card-hover">
+                <img src="{{ url_for('static', filename='images/unripe.jpg') }}" alt="Unripe" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full object-cover mb-3 sm:mb-4 border-4 border-yellow-400 shadow-lg">
+                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-yellow-600">Unripe</h3>
+                <p class="text-xs sm:text-sm text-gray-700">Early stage detection</p>
             </div>
-            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
-                <div class="text-green-500 text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-4">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2">Ripe</h3>
-                <p class="text-xs sm:text-sm text-gray-600">Perfect condition</p>
+            <div class="glass p-4 sm:p-6 rounded-2xl shadow-2xl text-center card-hover">
+                <img src="{{ url_for('static', filename='images/ripe.jpeg') }}" alt="Ripe" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full object-cover mb-3 sm:mb-4 border-4 border-green-400 shadow-lg">
+                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-green-600">Ripe</h3>
+                <p class="text-xs sm:text-sm text-gray-700">Perfect condition</p>
             </div>
-            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
-                <div class="text-orange-500 text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-4">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2">Overripe</h3>
-                <p class="text-xs sm:text-sm text-gray-600">Urgent sale needed</p>
+            <div class="glass p-4 sm:p-6 rounded-2xl shadow-2xl text-center card-hover">
+                <img src="{{ url_for('static', filename='images/overripe.jpeg') }}" alt="Overripe" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full object-cover mb-3 sm:mb-4 border-4 border-orange-400 shadow-lg">
+                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-orange-600">Overripe</h3>
+                <p class="text-xs sm:text-sm text-gray-700">Urgent sale needed</p>
             </div>
-            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition">
-                <div class="text-red-500 text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-4">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2">Rotten</h3>
-                <p class="text-xs sm:text-sm text-gray-600">Quality compromised</p>
+            <div class="glass p-4 sm:p-6 rounded-2xl shadow-2xl text-center card-hover">
+                <img src="{{ url_for('static', filename='images/rotten.jpeg') }}" alt="Rotten" class="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full object-cover mb-3 sm:mb-4 border-4 border-red-400 shadow-lg">
+                <h3 class="text-base sm:text-lg md:text-xl font-bold mb-1 sm:mb-2 text-red-600">Rotten</h3>
+                <p class="text-xs sm:text-sm text-gray-700">Quality compromised</p>
             </div>
         </div>
 
         <div class="text-center">
-            <a href="/detect" class="inline-block bg-green-600 text-white px-8 sm:px-10 md:px-12 py-3 sm:py-4 rounded-lg text-base sm:text-lg md:text-xl font-semibold hover:bg-green-700 transition shadow-lg">
+            <a href="/detect" class="inline-block bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 sm:px-10 md:px-12 py-3 sm:py-4 rounded-full text-base sm:text-lg md:text-xl font-bold hover:from-green-600 hover:to-blue-600 transition shadow-2xl transform hover:scale-105">
                 <i class="fas fa-camera mr-2"></i>
                 Start Inspection
             </a>
