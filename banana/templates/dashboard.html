@@ -10,13 +10,13 @@
 </head>
 <body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
     <nav class="bg-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-seedling text-3xl text-green-600"></i>
-                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+        <div class="container mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between flex-wrap">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <i class="fas fa-seedling text-2xl sm:text-3xl text-green-600"></i>
+                    <span class="text-lg sm:text-2xl font-bold text-gray-800">Banana Inspection</span>
                 </div>
-                <div class="flex space-x-6">
+                <div class="flex space-x-3 sm:space-x-6 text-sm sm:text-base mt-2 sm:mt-0">
                     <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
                     <a href="/detect" class="text-gray-600 hover:text-green-600">Detection</a>
                     <a href="/history" class="text-gray-600 hover:text-green-600">History</a>
@@ -26,74 +26,74 @@
         </div>
     </nav>
 
-    <div class="container mx-auto px-6 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8">Statistical Dashboard</h1>
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8">Statistical Dashboard</h1>
 
-        <div class="grid md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Total Inspections</p>
-                        <p class="text-3xl font-bold">{{ total }}</p>
+                        <p class="text-gray-500 text-xs sm:text-sm">Total Inspections</p>
+                        <p class="text-2xl sm:text-3xl font-bold">{{ total }}</p>
                     </div>
-                    <i class="fas fa-clipboard-list text-4xl text-blue-500"></i>
+                    <i class="fas fa-clipboard-list text-2xl sm:text-3xl md:text-4xl text-blue-500"></i>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Unripe</p>
-                        <p class="text-3xl font-bold">{{ stats.unripe }}</p>
-                        <p class="text-sm text-gray-400">{{ (stats.unripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
+                        <p class="text-gray-500 text-xs sm:text-sm">Unripe</p>
+                        <p class="text-2xl sm:text-3xl font-bold">{{ stats.unripe }}</p>
+                        <p class="text-xs sm:text-sm text-gray-400">{{ (stats.unripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
                     </div>
-                    <i class="fas fa-banana text-4xl text-yellow-500"></i>
+                    <i class="fas fa-banana text-2xl sm:text-3xl md:text-4xl text-yellow-500"></i>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Ripe</p>
-                        <p class="text-3xl font-bold">{{ stats.ripe }}</p>
-                        <p class="text-sm text-gray-400">{{ (stats.ripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
+                        <p class="text-gray-500 text-xs sm:text-sm">Ripe</p>
+                        <p class="text-2xl sm:text-3xl font-bold">{{ stats.ripe }}</p>
+                        <p class="text-xs sm:text-sm text-gray-400">{{ (stats.ripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
                     </div>
-                    <i class="fas fa-check-circle text-4xl text-green-500"></i>
+                    <i class="fas fa-check-circle text-2xl sm:text-3xl md:text-4xl text-green-500"></i>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Overripe</p>
-                        <p class="text-3xl font-bold">{{ stats.overripe }}</p>
-                        <p class="text-sm text-gray-400">{{ (stats.overripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
+                        <p class="text-gray-500 text-xs sm:text-sm">Overripe</p>
+                        <p class="text-2xl sm:text-3xl font-bold">{{ stats.overripe }}</p>
+                        <p class="text-xs sm:text-sm text-gray-400">{{ (stats.overripe / total * 100)|round(1) if total > 0 else 0 }}%</p>
                     </div>
-                    <i class="fas fa-exclamation-triangle text-4xl text-orange-500"></i>
+                    <i class="fas fa-exclamation-triangle text-2xl sm:text-3xl md:text-4xl text-orange-500"></i>
                 </div>
             </div>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-6">Distribution Chart</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+                <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Distribution Chart</h2>
                 <canvas id="pieChart"></canvas>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-6">Quality Overview</h2>
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+                <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Quality Overview</h2>
                 <canvas id="barChart"></canvas>
             </div>
         </div>
 
-        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-6">Rotten Bananas</h2>
-            <div class="flex items-center justify-between">
+        <div class="mt-6 sm:mt-8 bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Rotten Bananas</h2>
+            <div class="flex items-center justify-between flex-wrap">
                 <div>
-                    <p class="text-5xl font-bold text-red-600">{{ stats.rotten }}</p>
-                    <p class="text-gray-500 mt-2">Defective items detected</p>
+                    <p class="text-3xl sm:text-4xl md:text-5xl font-bold text-red-600">{{ stats.rotten }}</p>
+                    <p class="text-sm sm:text-base text-gray-500 mt-2">Defective items detected</p>
                 </div>
-                <i class="fas fa-times-circle text-8xl text-red-500"></i>
+                <i class="fas fa-times-circle text-5xl sm:text-6xl md:text-8xl text-red-500 mt-4 lg:mt-0"></i>
             </div>
         </div>
     </div>
