@@ -9,13 +9,13 @@
 </head>
 <body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
     <nav class="bg-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-seedling text-3xl text-green-600"></i>
-                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+        <div class="container mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between flex-wrap">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <i class="fas fa-seedling text-2xl sm:text-3xl text-green-600"></i>
+                    <span class="text-lg sm:text-2xl font-bold text-gray-800">Banana Inspection</span>
                 </div>
-                <div class="flex space-x-6">
+                <div class="flex space-x-3 sm:space-x-6 text-sm sm:text-base mt-2 sm:mt-0">
                     <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
                     <a href="/detect" class="text-green-600 font-semibold">Detection</a>
                     <a href="/history" class="text-gray-600 hover:text-green-600">History</a>
@@ -25,80 +25,80 @@
         </div>
     </nav>
 
-    <div class="container mx-auto px-6 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8">Banana Quality Inspection</h1>
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8">Banana Quality Inspection</h1>
 
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <h2 class="text-2xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-upload text-green-600 mr-3"></i>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">
+                    <i class="fas fa-upload text-green-600 mr-2 sm:mr-3"></i>
                     Upload Image
                 </h2>
                 
-                <div id="dropZone" class="border-4 border-dashed border-gray-300 rounded-lg p-12 text-center cursor-pointer hover:border-green-500 transition">
-                    <i class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i>
-                    <p class="text-xl text-gray-600 mb-2">Drag & Drop or Click to Upload</p>
-                    <p class="text-sm text-gray-500">Supported: JPG, PNG, JPEG</p>
+                <div id="dropZone" class="border-4 border-dashed border-gray-300 rounded-lg p-8 sm:p-12 text-center cursor-pointer hover:border-green-500 transition">
+                    <i class="fas fa-cloud-upload-alt text-4xl sm:text-6xl text-gray-400 mb-3 sm:mb-4"></i>
+                    <p class="text-base sm:text-xl text-gray-600 mb-2">Drag & Drop or Click to Upload</p>
+                    <p class="text-xs sm:text-sm text-gray-500">Supported: JPG, PNG, JPEG</p>
                     <input type="file" id="fileInput" accept="image/*" class="hidden">
                 </div>
 
-                <div id="preview" class="mt-6 hidden">
-                    <img id="previewImage" class="w-full rounded-lg shadow-lg">
-                    <button id="analyzeBtn" class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                <div id="preview" class="mt-4 sm:mt-6 hidden">
+                    <img id="previewImage" class="w-full rounded-lg shadow-lg max-h-64 sm:max-h-96 object-contain">
+                    <button id="analyzeBtn" class="w-full mt-3 sm:mt-4 bg-green-600 text-white py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold hover:bg-green-700 transition">
                         <i class="fas fa-search mr-2"></i>
                         Analyze Image
                     </button>
                 </div>
 
-                <div id="loading" class="hidden mt-6 text-center">
-                    <i class="fas fa-spinner fa-spin text-4xl text-green-600"></i>
-                    <p class="mt-2 text-gray-600">Analyzing...</p>
+                <div id="loading" class="hidden mt-4 sm:mt-6 text-center">
+                    <i class="fas fa-spinner fa-spin text-3xl sm:text-4xl text-green-600"></i>
+                    <p class="mt-2 text-sm sm:text-base text-gray-600">Analyzing...</p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <h2 class="text-2xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-clipboard-check text-green-600 mr-3"></i>
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:p-8">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center">
+                    <i class="fas fa-clipboard-check text-green-600 mr-2 sm:mr-3"></i>
                     Inspection Results
                 </h2>
 
-                <div id="noResult" class="text-center py-12 text-gray-400">
-                    <i class="fas fa-image text-6xl mb-4"></i>
-                    <p class="text-xl">Upload an image to see results</p>
+                <div id="noResult" class="text-center py-8 sm:py-12 text-gray-400">
+                    <i class="fas fa-image text-4xl sm:text-6xl mb-3 sm:mb-4"></i>
+                    <p class="text-base sm:text-xl">Upload an image to see results</p>
                 </div>
 
                 <div id="resultContainer" class="hidden">
-                    <div class="mb-6">
-                        <img id="resultImage" class="w-full rounded-lg shadow-lg">
+                    <div class="mb-4 sm:mb-6">
+                        <img id="resultImage" class="w-full rounded-lg shadow-lg max-h-64 sm:max-h-96 object-contain">
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <span class="font-semibold">Classification:</span>
-                            <span id="resultClass" class="text-xl font-bold"></span>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                            <span class="text-sm sm:text-base font-semibold">Classification:</span>
+                            <span id="resultClass" class="text-base sm:text-xl font-bold"></span>
                         </div>
 
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <span class="font-semibold">Confidence:</span>
-                            <span id="resultConfidence" class="text-xl font-bold"></span>
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                            <span class="text-sm sm:text-base font-semibold">Confidence:</span>
+                            <span id="resultConfidence" class="text-base sm:text-xl font-bold"></span>
                         </div>
 
-                        <div id="statusBadge" class="p-4 rounded-lg text-center text-white font-bold text-xl">
+                        <div id="statusBadge" class="p-3 sm:p-4 rounded-lg text-center text-white font-bold text-lg sm:text-xl">
                             <span id="resultStatus"></span>
                         </div>
 
-                        <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-                            <p class="font-semibold text-blue-900 mb-2">Recommendation:</p>
-                            <p id="resultMessage" class="text-blue-800"></p>
+                        <div class="p-3 sm:p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                            <p class="text-sm sm:text-base font-semibold text-blue-900 mb-1 sm:mb-2">Recommendation:</p>
+                            <p id="resultMessage" class="text-sm sm:text-base text-blue-800"></p>
                         </div>
 
-                        <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded">
-                            <p class="font-semibold text-green-900 mb-2">Action Required:</p>
-                            <p id="resultAction" class="text-green-800"></p>
+                        <div class="p-3 sm:p-4 bg-green-50 border-l-4 border-green-500 rounded">
+                            <p class="text-sm sm:text-base font-semibold text-green-900 mb-1 sm:mb-2">Action Required:</p>
+                            <p id="resultAction" class="text-sm sm:text-base text-green-800"></p>
                         </div>
                     </div>
 
-                    <button id="newInspection" class="w-full mt-6 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition">
+                    <button id="newInspection" class="w-full mt-4 sm:mt-6 bg-gray-600 text-white py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-700 transition">
                         <i class="fas fa-redo mr-2"></i>
                         New Inspection
                     </button>
@@ -187,7 +187,7 @@
         });
 
         function displayResults(data) {
-            document.getElementById('resultImage').src = '/static/uploads/' + data.image;
+            document.getElementById('resultImage').src = previewImage.src;
             document.getElementById('resultClass').textContent = data.class.toUpperCase();
             document.getElementById('resultConfidence').textContent = data.confidence + '%';
             document.getElementById('resultStatus').textContent = data.status;
