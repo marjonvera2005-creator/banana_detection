@@ -7,30 +7,47 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
-    <nav class="bg-white shadow-lg">
+<body class="min-h-screen">
+    <nav class="glass shadow-2xl sticky top-0 z-50">
         <div class="container mx-auto px-4 sm:px-6 py-4">
             <div class="flex items-center justify-between flex-wrap">
                 <div class="flex items-center space-x-2 sm:space-x-3">
-                    <i class="fas fa-seedling text-2xl sm:text-3xl text-green-600"></i>
-                    <span class="text-lg sm:text-2xl font-bold text-gray-800">Banana Inspection</span>
+                    <img src="{{ url_for('static', filename='images/banana.png') }}" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain">
+                    <span class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-yellow-600 bg-clip-text text-transparent">Banana Inspection System</span>
                 </div>
                 <div class="flex space-x-3 sm:space-x-6 text-sm sm:text-base mt-2 sm:mt-0">
-                    <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
-                    <a href="/detect" class="text-gray-600 hover:text-green-600">Detection</a>
-                    <a href="/history" class="text-gray-600 hover:text-green-600">History</a>
-                    <a href="/dashboard" class="text-green-600 font-semibold">Dashboard</a>
+                    <a href="/" class="text-gray-700 hover:text-green-600 font-medium">Home</a>
+                    <a href="/detect" class="text-gray-700 hover:text-green-600 font-medium">Detection</a>
+                    <a href="/history" class="text-gray-700 hover:text-green-600 font-medium">History</a>
+                    <a href="/dashboard" class="text-green-600 font-bold">Dashboard</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8">Statistical Dashboard</h1>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 text-white drop-shadow-lg">Statistical Dashboard</h1>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-xs sm:text-sm">Total Inspections</p>
@@ -40,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-xs sm:text-sm">Unripe</p>
@@ -51,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-xs sm:text-sm">Ripe</p>
@@ -62,7 +79,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-gray-500 text-xs sm:text-sm">Overripe</p>
@@ -75,18 +92,18 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Distribution Chart</h2>
                 <canvas id="pieChart"></canvas>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <div class="glass rounded-2xl shadow-2xl p-4 sm:p-6">
                 <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Quality Overview</h2>
                 <canvas id="barChart"></canvas>
             </div>
         </div>
 
-        <div class="mt-6 sm:mt-8 bg-white rounded-lg shadow-lg p-4 sm:p-6">
+        <div class="mt-6 sm:mt-8 glass rounded-2xl shadow-2xl p-4 sm:p-6">
             <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6">Rotten Bananas</h2>
             <div class="flex items-center justify-between flex-wrap">
                 <div>
