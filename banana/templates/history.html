@@ -9,13 +9,13 @@
 </head>
 <body class="bg-gradient-to-br from-yellow-50 to-green-50 min-h-screen">
     <nav class="bg-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-seedling text-3xl text-green-600"></i>
-                    <span class="text-2xl font-bold text-gray-800">Banana Inspection System</span>
+        <div class="container mx-auto px-4 sm:px-6 py-4">
+            <div class="flex items-center justify-between flex-wrap">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <i class="fas fa-seedling text-2xl sm:text-3xl text-green-600"></i>
+                    <span class="text-lg sm:text-2xl font-bold text-gray-800">Banana Inspection</span>
                 </div>
-                <div class="flex space-x-6">
+                <div class="flex space-x-3 sm:space-x-6 text-sm sm:text-base mt-2 sm:mt-0">
                     <a href="/" class="text-gray-600 hover:text-green-600">Home</a>
                     <a href="/detect" class="text-gray-600 hover:text-green-600">Detection</a>
                     <a href="/history" class="text-green-600 font-semibold">History</a>
@@ -25,46 +25,46 @@
         </div>
     </nav>
 
-    <div class="container mx-auto px-6 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8">Inspection History</h1>
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8">Inspection History</h1>
 
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white rounded-lg shadow-lg p-3 sm:p-4 md:p-6">
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full text-sm sm:text-base">
                     <thead>
                         <tr class="bg-gray-100">
-                            <th class="px-6 py-3 text-left">Image</th>
-                            <th class="px-6 py-3 text-left">Classification</th>
-                            <th class="px-6 py-3 text-left">Confidence</th>
-                            <th class="px-6 py-3 text-left">Status</th>
-                            <th class="px-6 py-3 text-left">Date & Time</th>
+                            <th class="px-2 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm">Image</th>
+                            <th class="px-2 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm">Class</th>
+                            <th class="px-2 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm hidden sm:table-cell">Confidence</th>
+                            <th class="px-2 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm">Status</th>
+                            <th class="px-2 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm hidden md:table-cell">Date & Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% if history %}
                             {% for item in history|reverse %}
                             <tr class="border-b hover:bg-gray-50">
-                                <td class="px-6 py-4">
-                                    <img src="/static/uploads/{{ item.image }}" class="w-20 h-20 object-cover rounded">
+                                <td class="px-2 sm:px-4 md:px-6 py-3 sm:py-4">
+                                    <img src="{{ url_for('static', filename='placeholder.jpg') }}" class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-cover rounded" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                                 </td>
-                                <td class="px-6 py-4 font-semibold">{{ item.class|upper }}</td>
-                                <td class="px-6 py-4">{{ item.confidence }}%</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-3 py-1 rounded-full text-white font-semibold
+                                <td class="px-2 sm:px-4 md:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-sm">{{ item.class|upper }}</td>
+                                <td class="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm hidden sm:table-cell">{{ item.confidence }}%</td>
+                                <td class="px-2 sm:px-4 md:px-6 py-3 sm:py-4">
+                                    <span class="px-2 sm:px-3 py-1 rounded-full text-white font-semibold text-xs sm:text-sm
                                         {% if item.status == 'PASS' %}bg-green-600
                                         {% elif item.status == 'WARNING' %}bg-orange-600
                                         {% else %}bg-red-600{% endif %}">
                                         {{ item.status }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">{{ item.timestamp }}</td>
+                                <td class="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm hidden md:table-cell">{{ item.timestamp }}</td>
                             </tr>
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
-                                    <i class="fas fa-inbox text-6xl mb-4"></i>
-                                    <p class="text-xl">No inspection history yet</p>
+                                <td colspan="5" class="px-4 sm:px-6 py-8 sm:py-12 text-center text-gray-400">
+                                    <i class="fas fa-inbox text-4xl sm:text-6xl mb-3 sm:mb-4"></i>
+                                    <p class="text-base sm:text-xl">No inspection history yet</p>
                                 </td>
                             </tr>
                         {% endif %}
