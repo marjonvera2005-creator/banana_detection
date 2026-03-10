@@ -9,6 +9,7 @@ app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 
+
 HISTORY_FILE = 'database/history.json'
 
 try:
@@ -107,53 +108,63 @@ def predict():
         return jsonify({'success': False, 'error': 'No file selected'})
     
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
+        filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{timestamp}_{filename}"
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         
-        results = model(filepath)
-        result = results[0]
-        
-        if hasattr(result, 'probs'):
-            class_id = result.probs.top1
-            confidence = float(result.probs.top1conf)
-            class_name = result.names[class_id]
-        else:
-            if len(result.boxes) > 0:
-                class_id = int(result.boxes[0].cls[0])
-                confidence = float(result.boxes[0].conf[0])
+        try:
+            results = model(filepath)
+            result = results[0]
+            
+            if hasattr(result, 'probs'):
+                class_id = result.probs.top1
+                confidence = float(result.probs.top1conf)
                 class_name = result.names[class_id]
             else:
-                return jsonify({'success': False, 'error': 'No banana detected'})
-        
-        recommendation = get_recommendation(class_name, confidence)
-        
-        history_data = {
-            'image': filename,
-            'class': class_name,
-            'confidence': round(confidence * 100, 2),
-            'status': recommendation['status'],
-            'recommendation': recommendation['message'],
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        }
-        save_history(history_data)
-        
-        return jsonify({
-            'success': True,
-            'class': class_name,
-            'confidence': round(confidence * 100, 2),
-            'status': recommendation['status'],
-            'color': recommendation['color'],
-            'message': recommendation['message'],
-            'action': recommendation['action'],
-            'image': filename
-        })
+                if len(result.boxes) > 0:
+                    class_id = int(result.boxes[0].cls[0])
+                    confidence = float(result.boxes[0].conf[0])
+                    class_name = result.names[class_id]
+                else:
+                    return jsonify({'success': False, 'error': 'No banana detected'})
+            
+            recommendation = get_recommendation(class_name, confidence)
+            
+            history_data = {
+                'image': filename,
+                'class': class_name,
+                'confidence': round(confidence * 100, 2),
+                'status': recommendation['status'],
+                'recommendation': recommendation['message'],
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            save_history(history_data)
+            
+            return jsonify({
+                'success': True,
+                'class': class_name,
+                'confidence': round(confidence * 100, 2),
+                'status': recommendation['status'],
+                'color': recommendation['color'],
+                'message': recommendation['message'],
+                'action': recommendation['action'],
+                'image': filename
+            })
+        except Exception as e:
+            return jsonify({'success': False, 'error': str(e)})
     
     return jsonify({'success': False, 'error': 'Invalid file type'})
+
+@app.errorhandler(500)
+def handle_500(e):
+    return jsonify({'success': False, 'error': 'Internal server error'}), 500
+
+@app.errorhandler(404)
+def handle_404(e):
+    return jsonify({'success': False, 'error': 'Not found'}), 404
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
