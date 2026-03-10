@@ -14,10 +14,21 @@ HISTORY_FILE = 'database/history.json'
 
 try:
     from ultralytics import YOLO
-    model = YOLO('model/best.pt')
-    print("Model loaded successfully!")
-except:
-    print("WARNING: Model not found. Add best.pt to model/ folder")
+    # Try multiple possible paths for the model
+    model_paths = ['model/best.pt', 'best.pt', '/opt/render/project/src/model/best.pt']
+    model = None
+    for path in model_paths:
+        try:
+            if os.path.exists(path):
+                model = YOLO(path)
+                print(f"Model loaded successfully from: {path}")
+                break
+        except:
+            continue
+    if model is None:
+        print("WARNING: Model not found in any expected location")
+except Exception as e:
+    print(f"ERROR loading model: {e}")
     model = None
 
 def allowed_file(filename):
@@ -40,25 +51,25 @@ def get_recommendation(class_name, confidence):
     recommendations = {
         'unripe': {
             'status': 'PASS',
-            'color': 'yellow',
+            'color': 'green',
             'message': 'Store for ripening. Not ready for sale.',
             'action': 'Keep in storage'
         },
         'ripe': {
             'status': 'PASS',
-            'color': 'green',
+            'color': 'yellow',
             'message': 'Perfect condition. Ready for sale.',
             'action': 'Approve for distribution'
         },
         'overripe': {
             'status': 'WARNING',
-            'color': 'orange',
+            'color': 'black',
             'message': 'Sell immediately or use for processing.',
             'action': 'Priority sale'
         },
         'rotten': {
             'status': 'FAIL',
-            'color': 'red',
+            'color': 'brown',
             'message': 'Quality compromised. Do not sell.',
             'action': 'Discard immediately'
         }
