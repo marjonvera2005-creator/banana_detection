@@ -14,9 +14,13 @@ HISTORY_FILE = 'database/history.json'
 
 try:
     from ultralytics import YOLO
+    import urllib.request
+    
     # Try multiple possible paths for the model
     model_paths = ['model/best.pt', 'best.pt', '/opt/render/project/src/model/best.pt']
     model = None
+    
+    # If no model found, try to download from a URL (replace with your model URL)
     for path in model_paths:
         try:
             if os.path.exists(path):
@@ -25,8 +29,12 @@ try:
                 break
         except:
             continue
+    
     if model is None:
         print("WARNING: Model not found in any expected location")
+        # Uncomment and add your model download URL here:
+        # urllib.request.urlretrieve('YOUR_MODEL_URL', 'best.pt')
+        # model = YOLO('best.pt')
 except Exception as e:
     print(f"ERROR loading model: {e}")
     model = None
@@ -106,78 +114,102 @@ def dashboard_page():
 def predict():
     try:
         if model is None:
-            return jsonify({
-                'success': False,
-                'error': 'Model not loaded. Please add best.pt to model/ folder'
-            })
+            return jsonify({'success': False, 'error': 'Model not loaded'}), 400
         
         if 'file' not in request.files:
-            return jsonify({'success': False, 'error': 'No file uploaded'})
+            return jsonify({'success': False, 'error': 'No file uploaded'}), 400
         
         file = request.files['file']
         
         if file.filename == '':
-            return jsonify({'success': False, 'error': 'No file selected'})
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
         
-        if file and allowed_file(file.filename):
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            filename = secure_filename(file.filename)
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"{timestamp}_{filename}"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            
-            try:
-                results = model(filepath)
-                result = results[0]
+        if not allowed_file(file.filename):
+            return jsonify({'success': False, 'error': 'Invalid file type'}), 400
+        
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{timestamp}_{filename}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        print(f"File saved to: {filepath}")
+        print("Starting prediction...")
+        results = model(filepath)
+        result = results[0]
+        
+        detections = []
+        stats = {'unripe': 0, 'ripe': 0, 'overripe': 0, 'rotten': 0}
+        
+        if hasattr(result, 'boxes') and len(result.boxes) > 0:
+            for box in result.boxes:
+                class_id = int(box.cls[0])
+                confidence = float(box.conf[0])
+                class_name = result.names[class_id]
+                coords = box.xyxy[0].tolist()
                 
-                if hasattr(result, 'probs'):
-                    class_id = result.probs.top1
-                    confidence = float(result.probs.top1conf)
-                    class_name = result.names[class_id]
-                else:
-                    if len(result.boxes) > 0:
-                        class_id = int(result.boxes[0].cls[0])
-                        confidence = float(result.boxes[0].conf[0])
-                        class_name = result.names[class_id]
-                    else:
-                        return jsonify({'success': False, 'error': 'No banana detected'})
-                
-                recommendation = get_recommendation(class_name, confidence)
-                
-                history_data = {
-                    'image': filename,
+                detections.append({
                     'class': class_name,
                     'confidence': round(confidence * 100, 2),
-                    'status': recommendation['status'],
-                    'recommendation': recommendation['message'],
-                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                }
-                save_history(history_data)
-                
-                return jsonify({
-                    'success': True,
-                    'class': class_name,
-                    'confidence': round(confidence * 100, 2),
-                    'status': recommendation['status'],
-                    'color': recommendation['color'],
-                    'message': recommendation['message'],
-                    'action': recommendation['action'],
-                    'image': filename
+                    'coords': coords
                 })
-            except Exception as e:
-                return jsonify({'success': False, 'error': f'Model error: {str(e)}'})
+                
+                class_lower = class_name.lower()
+                if class_lower in stats:
+                    stats[class_lower] += 1
+        else:
+            return jsonify({'success': False, 'error': 'No banana detected'}), 400
         
-        return jsonify({'success': False, 'error': 'Invalid file type'})
+        if not detections:
+            return jsonify({'success': False, 'error': 'No banana detected'}), 400
+        
+        top_detection = detections[0]
+        recommendation = get_recommendation(top_detection['class'], top_detection['confidence'] / 100)
+        
+        history_data = {
+            'image': filename,
+            'class': top_detection['class'],
+            'confidence': top_detection['confidence'],
+            'status': recommendation['status'],
+            'recommendation': recommendation['message'],
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_history(history_data)
+        
+        response = {
+            'success': True,
+            'class': top_detection['class'],
+            'confidence': top_detection['confidence'],
+            'status': recommendation['status'],
+            'color': recommendation['color'],
+            'message': recommendation['message'],
+            'action': recommendation['action'],
+            'image': filename,
+            'detections': detections,
+            'stats': stats,
+            'total_detected': len(detections)
+        }
+        print(f"Success: {response}")
+        return jsonify(response), 200
     except Exception as e:
-        return jsonify({'success': False, 'error': f'Server error: {str(e)}'})
+        import traceback
+        print(f"Route error: {e}")
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': f'Server error: {str(e)}'}), 500
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    print(f"Exception: {e}")
+    import traceback
+    traceback.print_exc()
     return jsonify({'success': False, 'error': f'Unexpected error: {str(e)}'}), 500
 
 @app.errorhandler(500)
 def handle_500(e):
+    print(f"500 Error: {e}")
+    import traceback
+    traceback.print_exc()
     return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
 @app.errorhandler(404)
@@ -190,6 +222,7 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print("=" * 50)
     print("Starting Banana Inspection System...")
+    print(f"Model loaded: {model is not None}")
     print(f"Port: {port}")
     print("=" * 50)
-    app.run(debug=False, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)
