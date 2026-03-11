@@ -22,6 +22,18 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+        #canvasContainer {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        #canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: block;
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -85,13 +97,37 @@
                 </div>
 
                 <div id="resultContainer" class="hidden">
-                    <div class="mb-4 sm:mb-6">
-                        <img id="resultImage" class="w-full rounded-lg shadow-lg max-h-64 sm:max-h-96 object-contain">
+                    <div id="canvasContainer" class="mb-4 sm:mb-6">
+                        <canvas id="canvas"></canvas>
                     </div>
 
                     <div class="space-y-3 sm:space-y-4">
                         <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
-                            <span class="text-sm sm:text-base font-semibold">Classification:</span>
+                            <span class="text-sm sm:text-base font-semibold">Total Detected:</span>
+                            <span id="totalDetected" class="text-base sm:text-xl font-bold text-green-600"></span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <div class="p-3 sm:p-4 bg-green-50 rounded-lg text-center">
+                                <p class="text-xs sm:text-sm text-gray-600">Unripe</p>
+                                <p id="statUnripe" class="text-lg sm:text-2xl font-bold text-green-600">0</p>
+                            </div>
+                            <div class="p-3 sm:p-4 bg-yellow-50 rounded-lg text-center">
+                                <p class="text-xs sm:text-sm text-gray-600">Ripe</p>
+                                <p id="statRipe" class="text-lg sm:text-2xl font-bold text-yellow-600">0</p>
+                            </div>
+                            <div class="p-3 sm:p-4 bg-orange-50 rounded-lg text-center">
+                                <p class="text-xs sm:text-sm text-gray-600">Overripe</p>
+                                <p id="statOverripe" class="text-lg sm:text-2xl font-bold text-orange-600">0</p>
+                            </div>
+                            <div class="p-3 sm:p-4 bg-red-50 rounded-lg text-center">
+                                <p class="text-xs sm:text-sm text-gray-600">Rotten</p>
+                                <p id="statRotten" class="text-lg sm:text-2xl font-bold text-red-600">0</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg">
+                            <span class="text-sm sm:text-base font-semibold">Top Classification:</span>
                             <span id="resultClass" class="text-base sm:text-xl font-bold"></span>
                         </div>
 
@@ -113,6 +149,11 @@
                             <p class="text-sm sm:text-base font-semibold text-green-900 mb-1 sm:mb-2">Action Required:</p>
                             <p id="resultAction" class="text-sm sm:text-base text-green-800"></p>
                         </div>
+
+                        <div id="detectionsList" class="mt-4 sm:mt-6">
+                            <h3 class="font-bold text-base sm:text-lg mb-3">All Detections:</h3>
+                            <div id="detectionsContainer" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                        </div>
                     </div>
 
                     <button id="newInspection" class="w-full mt-4 sm:mt-6 bg-gray-600 text-white py-2 sm:py-3 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-700 transition">
@@ -133,7 +174,10 @@
         const loading = document.getElementById('loading');
         const noResult = document.getElementById('noResult');
         const resultContainer = document.getElementById('resultContainer');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         let selectedFile = null;
+        let originalImage = null;
 
         dropZone.addEventListener('click', () => fileInput.click());
 
@@ -203,8 +247,52 @@
             }
         });
 
+        function drawBoundingBoxes(detections) {
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                const colors = {
+                    'unripe': '#22c55e',
+                    'ripe': '#eab308',
+                    'overripe': '#f97316',
+                    'rotten': '#ef4444'
+                };
+
+                detections.forEach((det, idx) => {
+                    const [x1, y1, x2, y2] = det.coords;
+                    const color = colors[det.class.toLowerCase()] || '#3b82f6';
+                    
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+                    const label = `${det.class} ${det.confidence}%`;
+                    const fontSize = 16;
+                    ctx.font = `bold ${fontSize}px Arial`;
+                    const textWidth = ctx.measureText(label).width;
+                    
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x1, y1 - fontSize - 8, textWidth + 8, fontSize + 8);
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(label, x1 + 4, y1 - 4);
+                });
+            };
+            img.src = previewImage.src;
+        }
+
         function displayResults(data) {
-            document.getElementById('resultImage').src = previewImage.src;
+            drawBoundingBoxes(data.detections);
+            
+            document.getElementById('totalDetected').textContent = data.total_detected;
+            document.getElementById('statUnripe').textContent = data.stats.unripe;
+            document.getElementById('statRipe').textContent = data.stats.ripe;
+            document.getElementById('statOverripe').textContent = data.stats.overripe;
+            document.getElementById('statRotten').textContent = data.stats.rotten;
+            
             document.getElementById('resultClass').textContent = data.class.toUpperCase();
             document.getElementById('resultConfidence').textContent = data.confidence + '%';
             document.getElementById('resultStatus').textContent = data.status;
@@ -212,7 +300,29 @@
             document.getElementById('resultAction').textContent = data.action;
 
             const statusBadge = document.getElementById('statusBadge');
-            statusBadge.className = 'p-4 rounded-lg text-center text-white font-bold text-xl bg-' + data.color + '-600';
+            const colorMap = {
+                'green': 'bg-green-600',
+                'yellow': 'bg-yellow-600',
+                'black': 'bg-gray-800',
+                'brown': 'bg-red-700'
+            };
+            statusBadge.className = `p-4 rounded-lg text-center text-white font-bold text-xl ${colorMap[data.color] || 'bg-blue-600'}`;
+
+            const detectionsContainer = document.getElementById('detectionsContainer');
+            detectionsContainer.innerHTML = '';
+            data.detections.forEach((det, idx) => {
+                const div = document.createElement('div');
+                div.className = 'p-2 sm:p-3 bg-gray-50 rounded border-l-4';
+                const colorBorder = {
+                    'unripe': 'border-green-500',
+                    'ripe': 'border-yellow-500',
+                    'overripe': 'border-orange-500',
+                    'rotten': 'border-red-500'
+                };
+                div.classList.add(colorBorder[det.class.toLowerCase()] || 'border-blue-500');
+                div.innerHTML = `<p class="text-sm font-semibold">#${idx + 1}: ${det.class.toUpperCase()}</p><p class="text-xs text-gray-600">Confidence: ${det.confidence}%</p>`;
+                detectionsContainer.appendChild(div);
+            });
 
             resultContainer.classList.remove('hidden');
         }
