@@ -142,24 +142,40 @@ def predict():
         detections = []
         stats = {'unripe': 0, 'ripe': 0, 'overripe': 0, 'rotten': 0}
         
-        if hasattr(result, 'boxes') and len(result.boxes) > 0:
-            for box in result.boxes:
-                class_id = int(box.cls[0])
-                confidence = float(box.conf[0])
-                class_name = result.names[class_id]
-                coords = box.xyxy[0].tolist()
-                
-                detections.append({
-                    'class': class_name,
-                    'confidence': round(confidence * 100, 2),
-                    'coords': coords
-                })
-                
-                class_lower = class_name.lower()
-                if class_lower in stats:
-                    stats[class_lower] += 1
-        else:
-            return jsonify({'success': False, 'error': 'No banana detected'}), 400
+        # Check if it's a detection model (has boxes)
+        if hasattr(result, 'boxes') and result.boxes is not None:
+            boxes = result.boxes
+            if len(boxes) > 0:
+                for box in boxes:
+                    class_id = int(box.cls[0])
+                    confidence = float(box.conf[0])
+                    class_name = result.names[class_id]
+                    coords = box.xyxy[0].tolist()
+                    
+                    detections.append({
+                        'class': class_name,
+                        'confidence': round(confidence * 100, 2),
+                        'coords': coords
+                    })
+                    
+                    class_lower = class_name.lower()
+                    if class_lower in stats:
+                        stats[class_lower] += 1
+        # Check if it's a classification model (has probs)
+        elif hasattr(result, 'probs') and result.probs is not None:
+            class_id = result.probs.top1
+            confidence = float(result.probs.top1conf)
+            class_name = result.names[class_id]
+            
+            detections.append({
+                'class': class_name,
+                'confidence': round(confidence * 100, 2),
+                'coords': [0, 0, 100, 100]
+            })
+            
+            class_lower = class_name.lower()
+            if class_lower in stats:
+                stats[class_lower] += 1
         
         if not detections:
             return jsonify({'success': False, 'error': 'No banana detected'}), 400
